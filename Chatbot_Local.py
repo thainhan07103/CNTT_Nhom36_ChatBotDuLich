@@ -1,4 +1,4 @@
-#AIzaSyDjldtlqP2r6MzCc0HJkUvkdJeP2G0H-BA  models/gemini-live-2.5-flash-preview
+#AIzaSyDjldtlqP2r6MzCc0HJkUvkdJeP2G0H-BA  models/gemini-live-2.0-flash-preview
 import google.generativeai as genai
 import pandas as pd
 
