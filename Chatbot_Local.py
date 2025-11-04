@@ -1,5 +1,7 @@
 #AIzaSyDjldtlqP2r6MzCc0HJkUvkdJeP2G0H-BA  models/gemini-live-2.5-flash-preview
 import google.generativeai as genai
+import pandas as pd
+
 
 # --- Cấu hình API key ---
 genai.configure(api_key="AIzaSyDjldtlqP2r6MzCc0HJkUvkdJeP2G0H-BA")
@@ -12,8 +14,8 @@ model_name = "gemini-2.0-flash"  # hoặc "gemini-1.5-pro"
 model = genai.GenerativeModel(model_name)
 
 # --- Đọc dữ liệu từ file txt ---
-with open("data.txt", "r", encoding="utf-8") as f:
-    data = f.read()
+with open("data.csv", "r", encoding="utf-8") as f:
+    data = pd.read_csv(f)
 
 # --- Vòng chat ---
 print("🤖 Chatbot sẵn sàng! (gõ 'exit' để thoát)\n")

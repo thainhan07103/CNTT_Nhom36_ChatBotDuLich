@@ -1,5 +1,6 @@
 import streamlit as st
 import google.generativeai as genai
+import pandas as pd
 
 # --- Cấu hình API key ---
 genai.configure(api_key="AIzaSyDjldtlqP2r6MzCc0HJkUvkdJeP2G0H-BA")
@@ -9,13 +10,13 @@ model_name = "models/gemini-2.0-flash"  # hoặc "gemini-2.0-flash"
 model = genai.GenerativeModel(model_name)
 
 # --- Đọc dữ liệu từ file ---
-with open("data.txt", "r", encoding="utf-8") as f:
-    data = f.read()
+with open("data.csv", "r", encoding="utf-8") as f:
+    data = pd.read_csv(f)
 
 # --- Giao diện Streamlit ---
 st.set_page_config(page_title="Chatbot Gemini", page_icon="🤖")
 st.title("🤖 Chatbot Gemini (Streamlit)")
-st.caption("Dữ liệu được nạp từ file `data.txt`")
+st.caption("Dữ liệu được nạp từ file `data.csv`")
 
 # --- Lưu lịch sử chat ---
 if "messages" not in st.session_state:
