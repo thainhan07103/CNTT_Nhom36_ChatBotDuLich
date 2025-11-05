@@ -6,7 +6,7 @@ import google.generativeai as genai
 genai.configure(api_key="AIzaSyDjldtlqP2r6MzCc0HJkUvkdJeP2G0H-BA")
 
 # --- Khai báo model ---
-model_name = "models/gemini-2.0-flash"  # hoặc "gemini-2.0-flash"
+model_name = "models/gemini-2.5-flash"  # hoặc "gemini-2.0-flash"
 model = genai.GenerativeModel(model_name)
 
 # --- Đọc dữ liệu từ file ---
@@ -14,9 +14,8 @@ with open("data_txt.txt", "r", encoding="utf-8") as f:
     data = f.read()
 
 # --- Giao diện Streamlit ---
-st.set_page_config(page_title="Chatbot Gemini", page_icon="🤖")
-st.title("🤖 Chatbot Gemini (Streamlit)")
-st.caption("Dữ liệu được nạp từ file `data.csv`")
+st.set_page_config(page_title="Chatbot du lịch", page_icon="🤖")
+st.title("🤖 Chatbot du lịch")
 
 # --- Lưu lịch sử chat ---
 if "messages" not in st.session_state:
@@ -36,14 +35,26 @@ if prompt := st.chat_input("Nhập câu hỏi của bạn..."):
 
     # --- Tạo prompt cho model ---
     full_prompt = f"""
-Dưới đây là dữ liệu tham khảo:
+Bạn là trợ lý du lịch chuyên nghiệp.
 
+Dưới đây là dữ liệu du lịch:
 {data}
 
-Hãy trả lời câu hỏi của người dùng dựa trên dữ liệu trên.
-Nếu không có thông tin trong dữ liệu, hãy nói 'Không tìm thấy thông tin trong dữ liệu.' 
+Trả lời câu hỏi của người dùng một cách rõ ràng, dễ đọc.
+- Nếu liệt kê địa điểm, hãy xuống dòng và dùng dấu • hoặc số thứ tự.
+- Không cần mở đầu bằng 'Dưới đây là...' hay 'Theo dữ liệu...'.
+- Giữ câu ngắn gọn, dễ nhìn.
+- Hãy trả lời tự nhiên, thân thiện, đôi khi dùng ví dụ hoặc so sánh, không chỉ copy dữ liệu.
+
 Câu hỏi: {prompt}
 """
+# Dưới đây là dữ liệu tham khảo:
+
+# {data}
+
+# Hãy trả lời câu hỏi của người dùng dựa trên dữ liệu trên.
+# Nếu không có thông tin trong dữ liệu, hãy nói 'Không tìm thấy thông tin trong dữ liệu.' 
+# Câu hỏi: {prompt}
 
     # --- Gọi Gemini ---
     response = model.generate_content(full_prompt)
@@ -59,4 +70,4 @@ Câu hỏi: {prompt}
 # --- Nút reset chat ---
 if st.button("🔁 Xóa lịch sử chat"):
     st.session_state.messages = []
-    st.experimental_rerun()
+    st.rerun()
