@@ -1,4 +1,3 @@
-#jsfbsgb
 import streamlit as st
 import google.generativeai as genai
 
@@ -33,38 +32,39 @@ if prompt := st.chat_input("Nhập câu hỏi của bạn..."):
     with st.chat_message("user"):
         st.markdown(prompt)
 
-    # --- Tạo prompt cho model ---
+    # --- Gộp lịch sử hội thoại để model nhớ ngữ cảnh ---
+    conversation_history = ""
+    for m in st.session_state.messages:
+        role = "Người dùng" if m["role"] == "user" else "Trợ lý"
+        conversation_history += f"{role}: {m['content']}\n"
+
+    # --- Tạo prompt đầy đủ ---
     full_prompt = f"""
 Bạn là trợ lý du lịch chuyên nghiệp.
 
 Dưới đây là dữ liệu du lịch:
 {data}
 
-Trả lời câu hỏi của người dùng một cách rõ ràng, dễ đọc.
+Hội thoại trước đó:
+{conversation_history}
+
+Trả lời câu hỏi mới nhất của người dùng một cách rõ ràng, dễ đọc.
 - Nếu liệt kê địa điểm, hãy xuống dòng và dùng dấu • hoặc số thứ tự.
 - Không cần mở đầu bằng 'Dưới đây là...' hay 'Theo dữ liệu...'.
-- Giữ câu ngắn gọn, dễ nhìn.
-- Hãy trả lời tự nhiên, thân thiện, đôi khi dùng ví dụ hoặc so sánh, không chỉ copy dữ liệu.
+- Giữ câu ngắn gọn, thân thiện, có thể ví dụ nếu cần.
 
-Câu hỏi: {prompt}
+Câu hỏi mới nhất: {prompt}
 """
-# Dưới đây là dữ liệu tham khảo:
-
-# {data}
-
-# Hãy trả lời câu hỏi của người dùng dựa trên dữ liệu trên.
-# Nếu không có thông tin trong dữ liệu, hãy nói 'Không tìm thấy thông tin trong dữ liệu.' 
-# Câu hỏi: {prompt}
 
     # --- Gọi Gemini ---
     response = model.generate_content(full_prompt)
-    reply = response.text
+    reply = response.text.strip()
 
-    # Hiển thị phản hồi
+    # --- Hiển thị phản hồi ---
     with st.chat_message("assistant"):
         st.markdown(reply)
 
-    # Lưu phản hồi vào session
+    # --- Lưu phản hồi vào session ---
     st.session_state.messages.append({"role": "assistant", "content": reply})
 
 # --- Nút reset chat ---
