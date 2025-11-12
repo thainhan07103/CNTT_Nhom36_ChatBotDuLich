@@ -2,8 +2,8 @@ import streamlit as st
 import google.generativeai as genai
 
 # --- Cấu hình trang ---
-st.set_page_config(page_title="Chatbot du lịch", page_icon="🤖")
-st.title("🤖 Chatbot du lịch")
+st.set_page_config(page_title="Trợ lý du lịch", page_icon="🤖")
+st.title("🤖 Trợ lý du lịch")
 
 # --- Nhập API key ---
 st.sidebar.header("🔐 Cấu hình API")
