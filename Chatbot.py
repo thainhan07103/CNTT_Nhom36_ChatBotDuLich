@@ -1,20 +1,31 @@
 import streamlit as st
 import google.generativeai as genai
 
-# --- Cấu hình API key ---
-genai.configure(api_key="AIzaSyCOlUN4DdFZj2QKhOe7UKJwJirTaqlehCw")
+# --- Cấu hình trang ---
+st.set_page_config(page_title="Chatbot du lịch", page_icon="🤖")
+st.title("🤖 Chatbot du lịch")
 
-# --- Khai báo model ---
-model_name = "models/gemini-2.5-flash"  # hoặc "gemini-2.0-flash"
-model = genai.GenerativeModel(model_name)
+# --- Nhập API key ---
+st.sidebar.header("🔐 Cấu hình API")
+api_key = st.sidebar.text_input("Nhập Google API key của bạn:", type="password")
+
+# Nếu chưa nhập API key thì dừng chương trình
+if not api_key:
+    st.warning("⚠️ Vui lòng nhập API key ở thanh bên trái để tiếp tục.")
+    st.stop()
+
+# --- Cấu hình Gemini ---
+try:
+    genai.configure(api_key=api_key)
+    model_name = "models/gemini-2.5-flash"
+    model = genai.GenerativeModel(model_name)
+except Exception as e:
+    st.error(f"Lỗi cấu hình API key: {e}")
+    st.stop()
 
 # --- Đọc dữ liệu từ file ---
 with open("data_txt.txt", "r", encoding="utf-8") as f:
     data = f.read()
-
-# --- Giao diện Streamlit ---
-st.set_page_config(page_title="Chatbot du lịch", page_icon="🤖")
-st.title("🤖 Chatbot du lịch")
 
 # --- Lưu lịch sử chat ---
 if "messages" not in st.session_state:
@@ -27,16 +38,14 @@ for msg in st.session_state.messages:
 
 # --- Ô nhập tin nhắn ---
 if prompt := st.chat_input("Nhập câu hỏi của bạn..."):
-    # Lưu tin nhắn người dùng
     st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
         st.markdown(prompt)
 
-    # --- Gộp lịch sử hội thoại để model nhớ ngữ cảnh ---
-    conversation_history = ""
-    for m in st.session_state.messages:
-        role = "Người dùng" if m["role"] == "user" else "Trợ lý"
-        conversation_history += f"{role}: {m['content']}\n"
+    # --- Gộp hội thoại ---
+    conversation_history = "\n".join(
+        [f"{'Người dùng' if m['role']=='user' else 'Trợ lý'}: {m['content']}" for m in st.session_state.messages]
+    )
 
     # --- Tạo prompt đầy đủ ---
     full_prompt = f"""
@@ -56,15 +65,15 @@ Trả lời câu hỏi mới nhất của người dùng một cách rõ ràng, 
 Câu hỏi mới nhất: {prompt}
 """
 
-    # --- Gọi Gemini ---
-    response = model.generate_content(full_prompt)
-    reply = response.text.strip()
+    try:
+        response = model.generate_content(full_prompt)
+        reply = response.text.strip()
+    except Exception as e:
+        reply = f"❌ Lỗi khi gọi API: {e}"
 
-    # --- Hiển thị phản hồi ---
     with st.chat_message("assistant"):
         st.markdown(reply)
 
-    # --- Lưu phản hồi vào session ---
     st.session_state.messages.append({"role": "assistant", "content": reply})
 
 # --- Nút reset chat ---
