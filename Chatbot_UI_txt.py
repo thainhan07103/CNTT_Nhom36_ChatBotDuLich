@@ -2,7 +2,7 @@ import streamlit as st
 import google.generativeai as genai
 
 # --- Cấu hình API key ---
-genai.configure(api_key="AIzaSyDjldtlqP2r6MzCc0HJkUvkdJeP2G0H-BA")
+genai.configure(api_key="AIzaSyCOlUN4DdFZj2QKhOe7UKJwJirTaqlehCw")
 
 # --- Khai báo model ---
 model_name = "models/gemini-2.5-flash"  # hoặc "gemini-2.0-flash"
