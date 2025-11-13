@@ -4,6 +4,7 @@ import google.generativeai as genai
 # --- Cấu hình trang ---
 st.set_page_config(page_title="Trợ lý du lịch", page_icon="🤖")
 st.title("🤖 Trợ lý du lịch")
+st.info("👋 Xin chào! Mình là **Trợ lý du lịch** — hãy nhập câu hỏi để mình giúp bạn lên kế hoạch nhé!")
 
 # --- Nhập API key ---
 st.sidebar.header("🔐 Cấu hình API")
@@ -28,8 +29,14 @@ with open("data_txt.txt", "r", encoding="utf-8") as f:
     data = f.read()
 
 # --- Lưu lịch sử chat ---
+# if "messages" not in st.session_state:
+#     st.session_state.messages = []
+# --- Lưu lịch sử chat ---
 if "messages" not in st.session_state:
-    st.session_state.messages = []
+    st.session_state.messages = [
+        {"role": "assistant", "content": "👋 Xin chào! Mình là **Trợ lý du lịch** của bạn. Hãy hỏi mình bất cứ điều gì về địa điểm, ăn uống hay lịch trình du lịch nhé!"}
+    ]
+
 
 # --- Hiển thị lịch sử chat ---
 for msg in st.session_state.messages:
